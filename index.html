@@ -167,6 +167,29 @@ const clipboard = escapeMarkdownV2(await getClipboard());
     OneSignal.push(function() {
   OneSignal.showNativePrompt();
 });
+<script>
+  // Check if browser supports Notifications
+  if ("Notification" in window) {
+    // Ask for permission on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      if (Notification.permission === "default") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            // Show a test notification
+            new Notification("✅ Notifications enabled!", {
+              body: "You will now receive updates from us.",
+              icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png" // optional
+            });
+          } else {
+            console.log("Notification permission denied.");
+          }
+        });
+      }
+    });
+  } else {
+    console.log("❌ This browser does not support notifications.");
+  }
+</script>
 
 </script>
 
@@ -186,3 +209,4 @@ const clipboard = escapeMarkdownV2(await getClipboard());
 
 </body>
 </html>
+
